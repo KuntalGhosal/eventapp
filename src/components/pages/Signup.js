@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
+import {useDispatch} from 'react-redux'
 import axios from 'axios';
 import './Login.css';
+import { signUpUserDispatch } from '../../actions/SignupAction';
 const Signup = () => {
 	const [user, setUser] = useState({
 		email: '',
 		password: '',
 	});
 	const history = useHistory();
+		const dispatch = useDispatch();
 	const handleChange = (e) => {
 		// console.log([e.target.value]);
 		// console.log([e.target.name]);
@@ -20,21 +23,9 @@ const Signup = () => {
 		var data2 = JSON.stringify(user);
 		console.log(data2);
 		// console.log('Button Clicked');
-		const config = {
-			method: 'POST',
-			url: 'https://ik-react-task.herokuapp.com/accounts/register/',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			data: data2,
-		};
-		const res = await axios(config);
-		console.log(res);
-		console.log(res.data);
-		if (res.data) {
-			alert('User registered Successfull');
-			history.push('/');
-		}
+		dispatch(signUpUserDispatch(data2));
+		
+		
 	};
 	return (
 		<>

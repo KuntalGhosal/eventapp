@@ -1,42 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import { getEventsType, postEvents } from '../../actions/UserActions';
+import { useDispatch,useSelector } from 'react-redux';
 const AddEvent = () => {
+	const dispatch = useDispatch();
+	const store = useSelector((state)=>state);
 	const [event, setEvent] = useState({
 		name: '',
 		event_type: '',
 		start: '',
 		end: '',
-		// token:
-		// 	'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo5OTUsInVzZXJuYW1lIjoiaGlyYUBnbWFpbC5jb20iLCJleHAiOjE2MjI4OTg4NTIsImVtYWlsIjoiaGlyYUBnbWFpbC5jb20ifQ.xAtzXAsi0Vsh46BWnzAadgArdT-ob65Lzd7iWT9xWZ0',
+		
 	});
-	const [info, setInfo] = useState([]);
+	const evTypes = store.user.eventTypes;
+	console.log("ETYPES",evTypes);
 	useEffect(() => {
-		loadEvent();
-	}, []);
+		dispatch(getEventsType())
+	},[])
+	
+	
 
-	const loadEvent = async () => {
-		// e.preventDefault();
-		const config = {
-			method: 'GET',
-			url: 'https://ik-react-task.herokuapp.com/events/event_types/',
-			headers: {
-				// 'Content-Type': 'application/json',
-				// Authorization: `Bearer ${event.token} `,
-			},
-		};
-		const res = await axios(config);
-		// const res = await fetch(
-		// 	'https://ik-react-task.herokuapp.com/events/event_types/'
-		// );
-		// const data = await res.json();
-		console.log(res.data[0]);
-		// const [data] = res.data;
-		// console.log(data);
-		setInfo({ info: res.data });
-		// const info = res.data;
-		// setUser(data);
-	};
 	const handleChange = (e) => {
+		console.log("EEE",e);
 		// console.log([e.target.value]);
 		// console.log([e.target.name]);
 		setEvent({ ...event, [e.target.name]: e.target.value });
@@ -44,32 +30,18 @@ const AddEvent = () => {
 	// console.log(user);
 	const onSubmit = async (e) => {
 		e.preventDefault();
-		console.log(event);
+		
 		var data2 = JSON.stringify(event);
-		console.log(data2);
+		console.log('DATA@',data2);
 		console.log('Button Clicked');
-		const config = {
-			method: 'POST',
-			url: 'https://ik-react-task.herokuapp.com/events/',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization:
-					'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo5OTUsInVzZXJuYW1lIjoiaGlyYUBnbWFpbC5jb20iLCJleHAiOjE2MjI4OTg4NTIsImVtYWlsIjoiaGlyYUBnbWFpbC5jb20ifQ.xAtzXAsi0Vsh46BWnzAadgArdT-ob65Lzd7iWT9xWZ0 ',
-			},
-			data: data2,
-		};
-		const res = await axios(config);
-		console.log(res);
-		console.log(res.data.token);
-		if (res.data) {
-			alert('User Add Successfull');
-			// history.push('/event');
-		}
+		dispatch(postEvents(data2));
+		// alert("Event added success")
+		
 	};
 	return (
 		<div className='container'>
 			<div className='w-75 mx-auto shadow p-5'>
-				<h2 className='text-center mb-4'>Add A User</h2>
+				<h2 className='text-center mb-4'>Add A Event</h2>
 
 				<form onSubmit={(e) => onSubmit(e)}>
 					<div className='form-group'>
@@ -85,18 +57,27 @@ const AddEvent = () => {
 
 					<div class='form-group'>
 						<label for='exampleFormControlSelect1'>Choose EventType</label>
-						<select
+						<select 
 							class='form-control'
 							id='exampleFormControlSelect1'
 							name='event_type'
 							value={event.etype}
-							onChange={handleChange}>
-							{/* {console.log(info)} */}
-							{/* {info.eventinfo.map((event) => {
-								<option>{event}</option>;
-							})} */}
-							<option>Bootcamp</option>
-							<option>Bootcamp</option>
+							onChange={handleChange}
+							>
+							
+							
+							{store.user.eventTypes.map((data,id) =>{
+								
+								return<option
+								
+								key={id}>
+								{data}
+								</option>
+								
+								
+							})}
+
+							
 						</select>
 					</div>
 					<div className='form-group'>
@@ -129,11 +110,11 @@ const AddEvent = () => {
 						className='btn btn-primary btn-block'
 						type='submit'
 						name='submit'
-						value='Add User'
+						value='Add Event'
 					/>
-					<a href='/event' className='btn btn-primary btn-block btn1'>
+					<Link to='/event' className='btn btn-primary btn-block btn1'>
 						Back
-					</a>
+					</Link>
 				</form>
 			</div>
 		</div>

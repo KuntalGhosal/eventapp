@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { NavLink, useHistory } from 'react-router-dom';
-import axios from 'axios';
+import { Link, useHistory } from 'react-router-dom';
+import { useDispatch,useSelector } from 'react-redux';
+import {loginUserDispatch} from '../../actions/AuthActions'
 import './Login.css';
-const Login = () => {
+const Login = (props) => {
+	const store = useSelector((state) => state);
+	console.log("STORE",store);
+	const dispatch = useDispatch();
 	const [user, setUser] = useState({
 		email: '',
 		password: '',
@@ -20,21 +24,12 @@ const Login = () => {
 		var data2 = JSON.stringify(user);
 		console.log(data2);
 		console.log('Button Clicked');
-		const config = {
-			method: 'POST',
-			url: 'https://ik-react-task.herokuapp.com/accounts/login/',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			data: data2,
-		};
-		const res = await axios(config);
-		console.log(res);
-		console.log(res.data.token);
-		if (res.data) {
-			alert('User Login Successfull');
-			history.push('/event');
-		}
+        setTimeout(
+			() => dispatch(loginUserDispatch(user)),
+			500,
+		)
+		
+
 	};
 	return (
 		<>
@@ -80,19 +75,23 @@ const Login = () => {
 											className='form-control'
 										/>
 									</div>
+									
 									<div className='form-group'>
 										<br></br>
+										
 										<input
 											type='submit'
 											name='submit'
 											className='btn btn-info btn-md'
 											value='submit'
 										/>
+
 									</div>
+									
 									<div id='register-link' className='text-right'>
-										<NavLink to='/signup' className='text-info'>
+										<Link to='/signup' className='text-info'>
 											Register
-										</NavLink>
+										</Link>
 									</div>
 								</form>
 							</div>

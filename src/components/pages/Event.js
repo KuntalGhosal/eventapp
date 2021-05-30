@@ -1,34 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-const Event = () => {
-	const [info, setInfo] = useState('');
-	useEffect(() => {
-		loadEvent();
-	}, []);
+import { Link } from 'react-router-dom';
+import {getEventListDispatch} from '../../actions/UserActions'
+import { useSelector,useDispatch } from 'react-redux';
 
-	const loadEvent = async () => {
+const Event = () => {
+	
+
+
+	
+		const store = useSelector((state) => state);
+    const dispatch = useDispatch()
+	const List = store.user.eventsList;
 		// e.preventDefault();
-		const config = {
-			method: 'GET',
-			url: 'https://ik-react-task.herokuapp.com/events/',
-			headers: {
-				// 'Content-Type': 'application/json',
-				Authorization:
-					'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo5OTUsInVzZXJuYW1lIjoiaGlyYUBnbWFpbC5jb20iLCJleHAiOjE2MjI4OTg4NTIsImVtYWlsIjoiaGlyYUBnbWFpbC5jb20ifQ.xAtzXAsi0Vsh46BWnzAadgArdT-ob65Lzd7iWT9xWZ0 ',
-			},
-		};
-		const res = await axios(config);
-		// const res = await fetch(
-		// 	'https://ik-react-task.herokuapp.com/events/event_types/'
-		// );
-		// const data = await res.json();
-		console.log(res.data);
-		// const [data] = res.data;
-		// console.log(data);
-		setInfo({ info: res.data });
-		// const info = res.data;
-		// setUser(data);
-	};
+		useEffect(() =>{
+			dispatch(getEventListDispatch())
+		},[])
 	return (
 		<div className='container'>
 			<div className='py-4'>
@@ -45,8 +32,8 @@ const Event = () => {
 						</tr>
 					</thead>
 					<tbody>
-						{console.log(info[0])}
-						{/* {info.map((user) => (
+						
+						{List.map((user) => (
 							<tr>
 								<th scope='row'>{user.id}</th>
 								<td>{user.name}</td>
@@ -54,14 +41,14 @@ const Event = () => {
 								<td>{user.start}</td>
 								<td>{user.end}</td>
 							</tr>
-						))} */}
+						))}
 					</tbody>
 				</table>
-				<a href='/addevent'>
+				<Link to='/addevent'>
 					<button type='button' class='btn btn-primary'>
-						Primary
+						Add Event
 					</button>
-				</a>
+				</Link>
 			</div>
 		</div>
 	);
